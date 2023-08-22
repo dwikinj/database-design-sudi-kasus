@@ -1,0 +1,141 @@
+@startuml
+
+entity Channel {
+    *channel_id : INT <<generated>>
+    --
+    *channel_name : VARCHAR
+    *profile_img : VARCHAR 
+    *user_id : INT <<FK>>
+    *artis_id : INT <<FK>>
+    playlist_id: INT <<FK>>
+    library_id : INT <<FK>>
+
+}
+
+entity Artis {
+    *artis_id : INT <<generated>>
+    --
+    *artis_name: VARCHAR
+    *channel_id : INT <<FK>>
+    *song_id : INT <<FK>>
+    *user_id : INT <<FK>>
+    *album_id : INT <<FK>>
+    video_id : INT <<FK>>
+    bio : TEXT 
+}
+
+entity User {
+    *user_id : INT <<generated>>
+    --
+    *email : VARCHAR
+    *password : VARCHAR
+    *username : VARCHAR
+    *birtday : DATETIME 
+}
+
+entity Song {
+    *song_id : INT 
+    --
+    *title : VARCHAR
+    *artis_id: INT <<FK>>
+    *song_thumbnail: VARCHAR
+    *duration : TIME 
+    channel_id : INT <<FK>>
+    album_id : INT <<FK>>
+    video_id: INT <<FK>>
+    likes : TINYINT(1)
+    video_id: INT <<FK>>
+    lyrics : TEXT 
+    created_at : DATETIME 
+
+}
+
+entity Album {
+    *album_id : INT <<generated>>
+    --
+    *song_id : INT <<FK>>
+    *title : VARCHAR
+    *artis_id: INT <<FK>>
+    description: TEXT
+    *album_img : VARCHAR
+    created_at: DATETIME
+}
+
+entity Video {
+    *video_id : INT <<generated>>
+    --
+    *title: VARCHAR
+    *duration : TIME
+    *channel_id: INT <<FK>>
+    *views : BIGINT 
+    created_at : DATETIME
+    likes : BIGINT
+    dislike : BIGINT 
+    created_at : DATETIME
+    genre_id : INT <<FK>>
+
+}
+
+entity Playlist {
+    *playlist_id: INT <<generated>>
+    --
+    *title : VARCHAR
+    description : TEXT
+    *privacy : ENUM
+    *channel_id : INT <<FK>>
+    genre_id : INT <<FK>>
+    song_id : INT <<FK>>
+    video_id : INT <<FK>>
+    created_at : DATETIME
+}
+
+entity Library {
+    *library_id : INT <<generated>>
+    --
+    *channel_id: INT <<FK>>
+    playlist_id: INT <<FK>>
+    album_id: INT <<FK>>
+    song_id: INT <<FK>>
+}
+
+entity Genre {
+    *genre_id : INT <<generated>>
+    --
+    *genre_name : VARCHAR
+    *playlist_id : INT <<FK>> 
+
+}
+
+entity Subscriptions {
+    *subscriber_id : INT <<FK>>
+    *subscribed_to_id : INT <<FK>>   
+}
+
+Channel }|--|| User :multiple channels
+Channel ||--|| Artis :Account
+Channel }|--o{  Artis :Subcribers
+Channel ||--o{ Song
+Channel ||--o{ Video
+Channel ||--o{ Playlist
+Channel ||--||Library
+Artis }|--|{ Song
+Artis ||--|{ Album
+Artis }|--o{ Video
+User ||--|| Artis
+Song }|--|| Album
+Song ||--o| Video
+Song }o--o{ Channel : Like/Dislike
+Album }o--o{ Library
+Album }o--o{ Playlist
+Video }o--o{ Playlist
+Video }o--o{ Channel : Like/Dislike
+Video }o--o{ Channel : Views
+Playlist }|--|| Genre 
+Playlist }o--|{ Song
+Playlist }o--o{ Library
+Library }o--o{ Song
+Library }o--o{ Artis
+Subscriptions }o--o{ Channel : Subscriber/Subscribed
+
+
+@enduml

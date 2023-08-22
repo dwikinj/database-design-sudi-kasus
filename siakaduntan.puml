@@ -1,0 +1,119 @@
+@startuml
+
+entity "Mahasiswa" {
+    *mahasiswa_id: INT <<generated>>
+    --
+    *nama : VARCHAR 
+    *nim : VARCHAR
+    *password : VARCHAR
+    *prodi_id : INT <<FK>>
+    *email : VARCHAR
+    *alamat_sekarang : VARCHAR
+    *place_birthday : VARCHAR
+    *dosen_id : INT <<FK>>
+
+}
+entity "Dosen" {
+    *dosen_id : INT <<generated>>
+    --
+    *nama : VARCHAR
+    *nip : VARCHAR
+    *email : VARCHAR
+    *password : VARCHAR
+    *mahasiswa_id : INT <<FK>>
+    *matkul_id : INT <<FK>>
+
+}
+
+entity "Mata Kuliah" as Matkul {
+    *matkul_id : INT <<generated>>
+    --
+    *kode_matkul : VARCHAR
+    *nama: VARCHAR
+    *semester : INT
+    *bobot_sks : INT 
+    *kelas : VARCHAR
+    jadwal : VARCHAR
+    *dosen_id : INT <<FK>>
+    *mahasiswa_id : INT <<FK>>
+
+}
+
+
+entity "Prodi" {
+    *prodi_id: INT <<generated>>
+    --
+    *prodi_name: VARCHAR
+    *mahasiswa_id: INT <<FK>>
+    *dosen_id : INT <<FK>>
+    *jurusan_id : INT <<FK>>
+    *fakultas_id : INT <<FK>>
+    *matkul_id : INT <<FK>>
+}
+
+entity "Jurusan" {
+    *jurusan_id: INT <<generated>>
+    --
+    *nama : VARCHAR
+    *prodi_id: INT <<FK>>
+}
+
+entity "Fakultas" {
+    *fakultas_id : INT <<generated>>
+    --
+    *nama : VARCHAR
+    *jurusan_id : INT <<FK>>
+}
+
+entity "Lirs" {
+    *lirs_id : INT <<generated>>
+    --
+    mahasiswa_id: INT <<FK>>
+    periode: VARCHAR
+    matkul_id : INT <<FK>>
+}
+
+entity "Lihs" {
+    *lihs_id : INT <<generated>>
+    --
+    *mahasiswa_id : INT <<FK>>
+    periode : VARCHAR
+    *matkul_id : INT <<FK>>
+    nilai_absensi: DECIMAL
+    nilai_uts : DECIMAL
+    nilai_uas : DECIMAL
+
+}
+
+entity "History Pembayaran" as Payment {
+    *payment_id: INT <<generated>>
+    --
+    *mahasiswa_id: INT <<FK>>
+    *biaya : DECIMAL
+    *created_at : DATETIME
+    *BANK : VARCHAR
+
+}
+entity "Ktm Online" as Ktm {
+    *ktm_id ; INT <<generated>>
+    --
+    *mahasiswa_id: INT <<FK>>
+}
+
+Mahasiswa }o--|| Dosen : Dosen PA
+Mahasiswa }|--o{ Matkul
+Mahasiswa }|--|| Prodi
+Mahasiswa }o--|{ Lirs
+Mahasiswa }o--|{ Lihs
+Mahasiswa }|--|{ Payment
+Mahasiswa }|--|| Ktm
+Dosen }o--o{ Matkul : Lecturing
+Dosen }|--|| Prodi : Homebase
+Matkul }|--|| Prodi :Prodi Schedule
+Matkul }o--|{ Lirs
+Matkul }|--|{ Lihs
+Prodi }|--|| Jurusan
+Jurusan }|--|| Fakultas
+
+
+@enduml
